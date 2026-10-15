@@ -2,8 +2,8 @@
 // @name         Claude.ai — hide donation footer
 // @namespace    https://github.com/hopsayer/Claude-Usage-Extension-Donate-Hideable
 // @homepageURL  https://github.com/hopsayer/Claude-Usage-Extension-Donate-Hideable
-// @@supportURL  https://github.com/hopsayer/Claude-Usage-Extension-Donate-Hideable/issues
-// @version      1.1.0
+// @supportURL  https://github.com/hopsayer/Claude-Usage-Extension-Donate-Hideable/issues
+// @version      1.1.1
 // @description  Hides donate footer hardcoded by Claude Usage Extension and keeps sidebar spacing symmetric.
 // @match        https://claude.ai/*
 // @run-at       document-idle
@@ -13,6 +13,10 @@
     'use strict';
 
     const KO_FI = 'a[href*="ko-fi.com"]';
+
+    // Tunable: bottom margin added back to the last bar so the gap below the
+    // sidebar matches the gap above it. Adjust if upstream changes its padding.
+    const BOTTOM_MARGIN = '3px';
 
     function applyFix() {
         const container = document.querySelector('.ut-usage-sidebar');
@@ -34,14 +38,15 @@
         container.classList.toggle('pt-1.5', !anyVisible);
         container.classList.toggle('ut-no-footers', !anyVisible);
 
-        // Spacing fix: when no footer is visible, zero out the two margins
-        // that together add 16px of trailing space below the last bar.
         const bars = container.querySelector('.ut-bars-container');
         const lastRow = bars?.querySelector('.ut-limit-row:last-child');
         const utContainer = bars?.closest('.ut-container');
 
+        // Spacing fix: when no footer is visible, the extension leaves extra
+        // trailing space below the last bar. Strip it, then add back BOTTOM_MARGIN
+        // so the gap below the sidebar matches the gap above it.
         if (!anyVisible) {
-            if (lastRow) lastRow.style.setProperty('margin-bottom', '0', 'important');
+            if (lastRow) lastRow.style.setProperty('margin-bottom', BOTTOM_MARGIN, 'important');
             if (utContainer) utContainer.style.setProperty('margin-bottom', '0', 'important');
         } else {
             if (lastRow) lastRow.style.removeProperty('margin-bottom');

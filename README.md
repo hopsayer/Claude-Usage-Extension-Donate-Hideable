@@ -66,9 +66,7 @@ In practice, on every render the script:
   extension's own `element.style.display` check sees it as hidden;
 - recomputes `anyFooterVisible` from the actual computed styles;
 - toggles `mb-6` / `pt-1.5` / `ut-no-footers` on the container to match;
-- zeroes the two trailing margins (`last .ut-limit-row` and its
-  `.ut-container` parent) that together add up to 16px below the last
-  bar when nothing is shown.
+- strips the extra trailing space the extension leaves below the last bar, then adds back a small margin so the gap below the sidebar matches the gap above it.
 
 A `MutationObserver` re-runs this whenever the extension rebuilds the
 sidebar or rewrites a style, so the state stays consistent across model
